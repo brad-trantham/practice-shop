@@ -6,11 +6,15 @@ import * as Font from 'expo-font'
 
 import productsReducer from './store/reducers/products'
 import cartReducer from './store/reducers/cart'
+import ordersReducer from './store/reducers/orders'
 import ShopNavigator from './navigation/ShopNavigator'
 
+// the identifiers used are are what is referenced by
+// state.xyz when you use useSelector()
 const rootReducer = combineReducers({
   products: productsReducer,
-  cart: cartReducer
+  cart: cartReducer,
+  orders: ordersReducer
 })
 
 const store = createStore(rootReducer)

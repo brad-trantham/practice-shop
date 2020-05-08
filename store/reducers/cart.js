@@ -46,7 +46,6 @@ export default (state = initialState, action) => {
             }
 
         case REMOVE_FROM_CART:
-            console.log(state)
             const selectedCartItem = state.items[action.pid]
             // we're either removing the item entirely or reducing the quantity by 1,
             // depending on whether or not there's more than 1 in the cart
@@ -69,7 +68,6 @@ export default (state = initialState, action) => {
             const newState =  { ...state,
                      items: updatedCartItems,
                      totalAmount: state.totalAmount - selectedCartItem.productPrice}
-            console.log(newState)
             return newState
     }
     return state
