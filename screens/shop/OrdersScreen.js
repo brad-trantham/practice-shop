@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux'
 import { HeaderButtons, Item } from 'react-navigation-header-buttons'
 
 import HeaderButton from '../../components/UI/HeaderButton'
+import OrderItem from '../../components/shop/OrderItem'
 
 const OrdersScreen = props => {
     // state.orders refers back to the reducer defined in App.js
@@ -11,7 +12,7 @@ const OrdersScreen = props => {
     const orders = useSelector(state => state.orders.orders)
 
     // keyExtractor is not required here because we have an id field already
-return <FlatList data={orders} renderItem={itemData => <Text>{itemData.item.totalAmount}</Text>} />
+return <FlatList data={orders} renderItem={itemData => <OrderItem amount={itemData.item.totalAmount} date={itemData.item.readableDate}/>} />
 }
 
 OrdersScreen.navigationOptions = navData => {
