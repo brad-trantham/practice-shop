@@ -12,7 +12,8 @@ const OrdersScreen = props => {
     const orders = useSelector(state => state.orders.orders)
 
     // keyExtractor is not required here because we have an id field already
-return <FlatList data={orders} renderItem={itemData => <OrderItem amount={itemData.item.totalAmount} date={itemData.item.readableDate}/>} />
+return <FlatList data={orders} renderItem={itemData => <OrderItem amount={itemData.item.totalAmount} date={itemData.item.readableDate}
+                                                                  items={itemData.item.items} />} />
 }
 
 OrdersScreen.navigationOptions = navData => {
