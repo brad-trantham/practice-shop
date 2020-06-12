@@ -30,7 +30,17 @@ export const fetchProducts = () => {
 }
 
 export const deleteProduct = productId => {
-    return {type: DELETE_PRODUCT, pid: productId}
+    return async dispatch => {
+        const response = await fetch(`https://rn-complete-guide-ebe67.firebaseio.com/products/${productId}.json`, {
+            method: 'DELETE'
+        })
+
+        if(!response.ok){
+            throw new Error('Something went wrong!')
+        }
+
+        dispatch({type: DELETE_PRODUCT, pid: productId})
+    }
 }
 
 export const createProduct = (title, description, imageUrl, price) => {
@@ -50,7 +60,7 @@ export const createProduct = (title, description, imageUrl, price) => {
         })
 
         const resData = await response.json()
-        console.log(resData)
+        
 
         dispatch({type: CREATE_PRODUCT, productData: {
             id: resData.name,
@@ -65,13 +75,30 @@ export const createProduct = (title, description, imageUrl, price) => {
 }
 
 export const updateProduct = (id, title, description, imageUrl) => {
-    return {type: UPDATE_PRODUCT, 
-        pid: id,
-        productData: {
-        title: title,
-        description: description,
-        // modern js shorthand for
-        // imageUrl: imageUrl
-        imageUrl
-    }}
+    return async dispatch => {
+        // in JS back ticks allow you to create a string with dynamic data inserted
+        const response = await fetch(`https://rn-complete-guide-ebe67.firebaseio.com/products/${id}.json`, {
+            // PATCH is like PUT but it only updates what you tell it to update (PUT updates the whole object)
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({title, description, imageUrl})
+        })
+
+        if(!response.ok){
+            throw new Error('Something went wrong!')
+        }
+
+        dispatch({type: UPDATE_PRODUCT, 
+            pid: id,
+            productData: {
+            title: title,
+            description: description,
+            // modern js shorthand for
+            // imageUrl: imageUrl
+            imageUrl
+        }})
+    }
+    
 }

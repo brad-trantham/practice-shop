@@ -1,11 +1,12 @@
-import React, {useEffect, useCallback, useReducer} from 'react'
-import { View, ScrollView, KeyboardAvoidingView, StyleSheet, Platform, Alert } from 'react-native'
+import React, {useEffect, useCallback, useReducer, useState} from 'react'
+import { View, ScrollView, KeyboardAvoidingView, StyleSheet, Platform, Alert, ActivityIndicator } from 'react-native'
 import { useSelector, useDispatch } from 'react-redux'
 import { HeaderButtons, Item } from 'react-navigation-header-buttons'
 
 import HeaderButton from '../../components/UI/HeaderButton'
 import * as productActions from '../../store/actions/products'
 import Input from '../../components/UI/Input'
+import Colors from '../../constants/Colors'
 
 const FORM_INPUT_UPDATE = 'UPDATE'
 
@@ -34,6 +35,8 @@ const formReducer = (state, action) => {
 }
 
 const EditProductScreen = props => {
+    const [isLoading, setIsLoading] = useState(false)
+    const [error, setError] = useState()
     const prodId = props.navigation.getParam('productId')
     const editedProduct = useSelector(state => state.products.userProducts.find(prod => prod.id === prodId))
     const dispatch = useDispatch()
@@ -54,19 +57,33 @@ const [formState, dispatchFormState] = useReducer(formReducer, {
         formIsValid: editedProduct ? true : false
     })
 
-    const submitHandler = useCallback(() => {
+    useEffect(()=>{
+        if(error){
+            Alert.alert('An error occured!', error, [{text: 'OK'}])
+        }
+    }, [error])
+
+    const submitHandler = useCallback(async () => {
         if(!formState.formIsValid) {
             Alert.alert('Wrong input!', 'Please check the errors in the form', [{text: 'Okay'}])
             return
         }
-        if(editedProduct){
-            dispatch(productActions.updateProduct(prodId, formState.inputValues.title, formState.inputValues.description, formState.inputValues.imageUrl))
-        }
-        else {
-            // the + converts the price from a string to a number
-            dispatch(productActions.createProduct(formState.inputValues.title, formState.inputValues.description, formState.inputValues.imageUrl, +formState.inputValues.price))
-        }
-        props.navigation.goBack()
+        setError(null)
+        setIsLoading(true)
+        try{
+            if(editedProduct){
+                await dispatch(productActions.updateProduct(prodId, formState.inputValues.title, formState.inputValues.description, formState.inputValues.imageUrl))
+            }
+            else {
+                // the + converts the price from a string to a number
+                await dispatch(productActions.createProduct(formState.inputValues.title, formState.inputValues.description, formState.inputValues.imageUrl, +formState.inputValues.price))
+            }
+            props.navigation.goBack()
+        } catch (err) {
+            setError(err.message)
+        }        
+        setIsLoading(false)
+        
     }, [dispatch, prodId, formState])
 
     useEffect(() => {
@@ -77,6 +94,10 @@ const [formState, dispatchFormState] = useReducer(formReducer, {
     const inputChangeHandler = useCallback((inputIdentifier, inputValue, inputValidity) => {
         dispatchFormState({type: FORM_INPUT_UPDATE, value: inputValue, isValid: inputValidity, input: inputIdentifier})
     },[dispatchFormState])
+
+    if(isLoading){
+        return <View style={styles.centered}><ActivityIndicator size="large" color={Colors.primary}/></View>
+    }
 
     return (
         // the keyboard avoiding view must use flex 1 or else it doesn't give itself enough space
@@ -117,6 +138,11 @@ const styles = StyleSheet.create({
     form: {
         margin: 20, 
     },
+    centered: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    }
     
 })
 

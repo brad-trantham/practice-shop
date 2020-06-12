@@ -12,6 +12,7 @@ import Colors from '../../constants/Colors'
 
 const ProductOverviewScreen = props => {
     const [isLoading, setIsLoading] = useState(false)
+    const [isRefreshing, setIsRefreshing] = useState(false)
     const [error, setError] = useState()
     const products = useSelector(state => state.products.availableProducts)
     const dispatch = useDispatch()
@@ -22,13 +23,13 @@ const ProductOverviewScreen = props => {
     // which awaits the load
     const loadProducts = useCallback(async () => {
         setError(null)
-        setIsLoading(true)
+        setIsRefreshing(true)
         try {
             await dispatch(productActions.fetchProducts())
         } catch(err) {
             setError(err.message)
         }
-        setIsLoading(false)
+        setIsRefreshing(false)
     }, [dispatch, setIsLoading, setError])
 
     useEffect(() => {
@@ -42,7 +43,10 @@ const ProductOverviewScreen = props => {
 
     // this runs once when the component is loaded
     useEffect(() => {
-        loadProducts()
+        setIsLoading(true)
+        loadProducts().then(()=>{
+            setIsLoading(false)
+        })
     }, [dispatch, loadProducts])
 
     const selectItemHandler = (id, title) => {
@@ -70,7 +74,8 @@ const ProductOverviewScreen = props => {
     }
 
     // in older versions of react you'd also need to define the keyExtractor for the FlatList
-    return <FlatList data={products} renderItem={itemData => 
+    return <FlatList onRefresh={loadProducts} refreshing={isRefreshing} 
+                data={products} renderItem={itemData => 
         <ProductItem image={itemData.item.imageUrl} title={itemData.item.title} price={itemData.item.price} 
                      onSelect={()=>{
                          selectItemHandler(itemData.item.id, itemData.item.title)
