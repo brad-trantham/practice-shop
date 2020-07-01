@@ -3,7 +3,7 @@
     "name": "RN Guide",
     "slug": "rn-complete-guide",
     "privacy": "public",
-    "sdkVersion": "37.0.0",
+    "sdkVersion": "38.0.0",
     "platforms": [
       "ios",
       "android",

@@ -40,7 +40,7 @@ return <FlatList data={orders} renderItem={itemData => <OrderItem amount={itemDa
                                                                   items={itemData.item.items} />} />
 }
 
-OrdersScreen.navigationOptions = navData => {
+export const screenOptions = navData => {
     return {
         headerTitle: 'Your Orders',
         headerLeft: () => 

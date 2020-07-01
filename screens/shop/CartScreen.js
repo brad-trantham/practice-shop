@@ -50,7 +50,7 @@ const CartScreen = props => {
         </View>
 )}
 
-CartScreen.navigationOptions = {
+export const screenOptions = {
     headerTitle: 'Your Cart'
 }
 

@@ -87,7 +87,7 @@ const ProductOverviewScreen = props => {
         </ProductItem>} />
 }
 
-ProductOverviewScreen.navigationOptions = navData => {
+export const screenOptions = navData => {
     return {
         headerTitle: 'All Products',
         headerLeft: () => 
