@@ -11,7 +11,7 @@ import CartScreen, {screenOptions as cartScreenOptions } from '../screens/shop/C
 import OrdersScreen, {screenOptions as ordersScreenOptions} from '../screens/shop/OrdersScreen';
 import UserProductsScreen, {screenOptions as userProductsScreenOptions} from '../screens/user/UserProductsScreen'
 import EditProductScreen, {screenOptions as editProductScreenOptions} from '../screens/user/EditProductScreen'
-import AuthScreen from '../screens/user/AuthScreen'
+import AuthScreen, {screenOptions as authScreenOptions} from '../screens/user/AuthScreen'
 import StartupScreen from '../screens/StartupScreen'
 import Colors from '../constants/Colors';
 import * as authActions from '../store/actions/auth'
@@ -92,10 +92,10 @@ export const OrdersNavigator = () => {
 const AdminStackNavigator = createStackNavigator()
 
 export const AdminNavigator = () => {
-  return <AdminNavigator.Navigator screenOptions={defaultNavOptions}>
-    <AdminNavigator.Screen name="UserProducts" component={UserProductsScreen} options={userProductsScreenOptions} />
-    <AdminNavigator.Screen name="EditProduct" component={EditProductScreen} options={editProductScreenOptions} />
-  </AdminNavigator.Navigator>
+  return <AdminStackNavigator.Navigator screenOptions={defaultNavOptions}>
+    <AdminStackNavigator.Screen name="UserProducts" component={UserProductsScreen} options={userProductsScreenOptions} />
+    <AdminStackNavigator.Screen name="EditProduct" component={EditProductScreen} options={editProductScreenOptions} />
+  </AdminStackNavigator.Navigator>
 }
 
 // const AdminNavigator = createStackNavigator(
@@ -119,7 +119,7 @@ export const AdminNavigator = () => {
 
 const ShopDrawerNavigator = createDrawerNavigator()
 
-const ShopNavigator = () => {
+export const ShopNavigator = () => {
   const dispatch = useDispatch()
   return <ShopDrawerNavigator.Navigator drawerContent={props => {
           return <View style={{flex: 1, paddingTop: 20}}>
@@ -187,6 +187,14 @@ const ShopNavigator = () => {
 //     }
 //   }
 // );
+
+const AuthStackNavigator = createStackNavigator()
+
+export const AuthNavigator = () => {
+  return <AuthStackNavigator.Navigator screenOptions={defaultNavOptions}>
+    <AuthStackNavigator.Screen name="Auth" component={AuthScreen} options={authScreenOptions}/>
+  </AuthStackNavigator.Navigator>
+}
 
 // const AuthNavigator = createStackNavigator({
 //   Auth: AuthScreen

@@ -33,11 +33,11 @@ const ProductOverviewScreen = props => {
     }, [dispatch, setIsLoading, setError])
 
     useEffect(() => {
-        const willFocusSub = props.navigation.addListener('willFocus', loadProducts)
+        const unsubscribe = props.navigation.addListener('focus', loadProducts)
 
         // cleanup function that is run with this component is removed or rebuilt
         return () => {
-            willFocusSub.remove()
+            unsubscribe()
         }
     }, [loadProducts])
 
