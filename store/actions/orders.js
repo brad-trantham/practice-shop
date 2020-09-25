@@ -49,5 +49,27 @@ export const addOrder = (cartItems, totalAmount) => {
         const resData = await response.json()
 
         dispatch({type: ADD_ORDER, orderData: {id: resData.Name, items: cartItems, amount: totalAmount, date: newDate}})
+
+        // normally the push notifications would be sent by server side code
+        for (const cartItem of cartItems) {
+            const pushToken = cartItem.productPushToken
+
+            console.log(cartItem)
+
+            // you could monitor the response here, we're just doing fire and forget
+            fetch('https://exp.host/--/api/v2/push/send', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Accept-encoding' : 'gzip, deflate',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    to: pushToken,
+                    title: 'Order was placed',
+                    body: cartItem.productTitle
+                })
+            })
+        }
     }
 }

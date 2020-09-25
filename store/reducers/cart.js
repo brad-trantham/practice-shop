@@ -14,6 +14,7 @@ export default (state = initialState, action) => {
             const addedProduct = action.product
             const prodPrice = addedProduct.price
             const prodTitle = addedProduct.title
+            const pushToken = addedProduct.pushToken
 
             let updatedOrNewCartItem
 
@@ -27,13 +28,14 @@ export default (state = initialState, action) => {
                     // we access the old one or the new one here
                     prodPrice,
                     prodTitle,
+                    pushToken,
                     // sum = current sum + price of adding another one of the item
                     state.items[addedProduct.id].sum + prodPrice
                 )
                 
             }
             else {
-                updatedOrNewCartItem = new CartItem(1, prodPrice, prodTitle, prodPrice)                
+                updatedOrNewCartItem = new CartItem(1, prodPrice, prodTitle, pushToken, prodPrice)                
             }
 
             return {

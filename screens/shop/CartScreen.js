@@ -19,7 +19,10 @@ const CartScreen = props => {
                 productTitle: state.cart.items[key].productTitle,
                 productPrice: state.cart.items[key].productPrice,
                 quantity: state.cart.items[key].quantity,
-                sum: state.cart.items[key].sum
+                sum: state.cart.items[key].sum,
+                // the token has to be dealt with here because this is where
+                // data is pulled from the state and dispatched to the reducer
+                productPushToken: state.cart.items[key].pushToken
             })
         }
         return transformedCartItems.sort((a,b) => a.productId > b.productId ? 1 : -1)

@@ -1,4 +1,6 @@
 import Product from "../../models/product"
+import * as Notifications from 'expo-notifications'
+import * as Permissions from 'expo-permissions'
 
 export const DELETE_PRODUCT = 'DELETE_PRODUCT'
 export const CREATE_PRODUCT = 'CREATE_PRODUCT'
@@ -19,7 +21,7 @@ export const fetchProducts = () => {
         const loadedProducts = []
 
         for (const key in resData) {
-            loadedProducts.push(new Product(key, resData[key].ownerId, resData[key].title, 
+            loadedProducts.push(new Product(key, resData[key].ownerId, resData[key].ownerPushToken, resData[key].title, 
                 resData[key].imageUrl, resData[key].description, resData[key].price))
         }
 
@@ -51,6 +53,18 @@ export const createProduct = (title, description, imageUrl, price) => {
     //     redux thunk detects the functional syntax and calls and passes
     //     things appropriately
     return async (dispatch, getState) => {        
+        let pushToken
+        let statusObj = await Permissions.getAsync(Permissions.NOTIFICATIONS)
+        if(statusObj.status !== 'granted') {
+            statusObj = await Permissions.getAsync(Permissions.NOTIFICATIONS)
+        }
+        if(statusObj.status !== 'granted') {
+            pushToken = null
+        } else {
+            // the parenthesis waits for the promise to resolve before accessing .data
+            pushToken = (await Notifications.getExpoPushTokenAsync()).data
+        }
+
         const token = getState().auth.token
         const userId = getState().auth.userId
         // 1) any async code can be executed here - see the react course or redux thunk docs
@@ -61,7 +75,8 @@ export const createProduct = (title, description, imageUrl, price) => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({title, description, imageUrl, price, ownerId: userId})
+            body: JSON.stringify({title, description, imageUrl, price, ownerId: userId,
+                ownerPushToken: pushToken})
         })
 
         const resData = await response.json()
@@ -75,7 +90,8 @@ export const createProduct = (title, description, imageUrl, price) => {
             // imageUrl: imageUrl
             imageUrl,
             price,
-            ownerId: userId
+            ownerId: userId,
+            pushToken: pushToken
         }})
     }
 }
